@@ -22,7 +22,6 @@ def get_encrypted_url(link, site='', api=''):
         raise ValueError("site is missing")
 
     res = requests.get("https://short.gkbotz.qzz.io/api/encrypt", params=params)
-    await asleep(0)
     if res.status_code == 200:
         return res.json().get('encrypted_url', link)
 
