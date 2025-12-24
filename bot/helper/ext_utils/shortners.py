@@ -1,3 +1,4 @@
+import requests
 from base64 import b64encode
 from random import choice, random, randrange
 from time import sleep
@@ -8,6 +9,22 @@ from urllib3 import disable_warnings
 
 from bot import LOGGER, shorteners_list
 
+
+
+def get_encrypted_url(link, site='', api=''):
+    params = {'url': link}
+    if site and api:
+        params['site'] = site
+        params['api'] = api
+    elif site and not api:
+        raise ValueError("api is missing")
+    elif api and not site:
+        raise ValueError("site is missing")
+
+    res = requests.get("https://short.gkbotz.qzz.io/api/encrypt", params=params)
+    await asleep(0)
+    if res.status_code == 200:
+        return res.json().get('encrypted_url', link)
 
 def short_url(longurl, attempt=0):
     if not shorteners_list:
@@ -21,6 +38,8 @@ def short_url(longurl, attempt=0):
     cget = create_scraper().request
     disable_warnings()
     try:
+        if True and (encrypted_url_ := get_encrypted_url(longurl, _shortener, _shortener_api)):
+                return encrypted_url_
         if "shorte.st" in _shortener:
             headers = {'public-api-token': _shortener_api}
             data = {'urlToShorten': quote(longurl)}
